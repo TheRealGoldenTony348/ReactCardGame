@@ -29,7 +29,11 @@ export default function App(){
     });
     const [isDeckShuffled, setIsDeckShuffled] = useState(false);
     const [isCardDone, SetIsCardDone] = useState(false);
+    const [cardAmount, setCardAmount] = useState(1);
     
+    const handleChange = (event) => {
+        setCardAmount(event.target.value);
+    };
 
     const fetchDeckOnClick = async () => {
         await fetch("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
@@ -40,7 +44,7 @@ export default function App(){
     }
 
     const fetchCardFromDeck = async () => {
-        await fetch(`https://deckofcardsapi.com/api/deck/${deckData.deck_id}/draw/?count=4`)
+        await fetch(`https://deckofcardsapi.com/api/deck/${deckData.deck_id}/draw/?count=${cardAmount}`)
             .then((response) => response.json())
             .then((result) => setDrawnCards(result))
             .catch((error) => console.error("Error fetching data: ", error));
@@ -49,15 +53,14 @@ export default function App(){
 
     return(
         <>
-        <h1>welcome</h1>
+        <h1>Card Game</h1>
         <button onClick={fetchDeckOnClick}>Shuffle a Deck</button>
-        {deckData ? <pre>{JSON.stringify(deckData, null, 2)}</pre> : <p>Shuffle a deck</p>}
+        {isDeckShuffled ? <p>Deck shuffled!</p> : <p>Shuffle a deck</p>}
+        {isDeckShuffled ? <div>input how many cards you want to draw: <input value={cardAmount} onChange={handleChange} type="text" /></div> : <div></div>}
         {isDeckShuffled ? <button onClick={fetchCardFromDeck}>Draw a Card from the Deck</button> : <div></div>}
         {isCardDone ? drawnCards.cards.map((card, i) => (
             <Card key={i} image={card.image} value={card.value} suit={card.suit}></Card>
         )) : <p>Draw a card</p>}
-
-        <button onClick={console.log(cardValue, drawnCards, deckData)}>CHECK</button>
         </>
     );
 }
