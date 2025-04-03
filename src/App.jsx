@@ -61,6 +61,7 @@ export default function App(){
         {isCardDone ? drawnCards.cards.map((card, i) => (
             <Card key={i} image={card.image} value={card.value} suit={card.suit}></Card>
         )) : <p>Draw a card</p>}
+        {isCardDone ? <div>{drawnCards.remaining} out of {deckData.remaining}</div> : <div></div>}
         </>
     );
 }
